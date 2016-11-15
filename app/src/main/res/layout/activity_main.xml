@@ -19,7 +19,7 @@
         android:text="Meilleurs scores" />
 
     <Button
-        android:id="@+id/parameters"
+        android:id="@+id/settings"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Paramètres" />

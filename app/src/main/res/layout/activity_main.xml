@@ -1,22 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.steve.memory.MainActivity">
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="20dp"
+    android:weightSum="1">
 
-    <TextView
-        android:text="Page d'accueil"
-        android:layout_width="wrap_content"
+    <Button android:id="@+id/play"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="98dp"
-        android:id="@+id/textView"
-        android:textSize="24sp" />
-</RelativeLayout>
+        android:text="Jouer" />
+
+    <Button
+        android:id="@+id/bestScores"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Meilleurs scores" />
+
+    <Button
+        android:id="@+id/about"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="À propos" />
+
+    <ImageView
+        android:layout_width="334dp"
+        android:layout_height="120dp"
+        android:id="@+id/imageView2"
+        tools:srcCompat="@mipmap/ic_launcher"
+        app:srcCompat="@drawable/memory"
+        android:layout_gravity="center"
+        android:layout_weight="0.37"
+        android:layout_marginTop="60dp"/>
+</LinearLayout>

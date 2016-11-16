@@ -20,6 +20,12 @@ public class MainActivity extends AppCompatActivity {
         // Récupération de l'ID du bouton "Setting" et assignation de la fonction
         Button btnSettings = (Button) findViewById(R.id.settings);
         btnSettings.setOnClickListener(settings);
+
+
+        if( getIntent().getBooleanExtra("Exit me", false)){
+            finish();
+            return;
+        }
     }
 
     // Fonction qui démarre l'activé "Settings"

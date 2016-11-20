@@ -3,11 +3,8 @@ package com.example.steve.memory;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
-import static com.example.steve.memory.R.id.about;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,6 +15,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Définition du titre de l'activité
         this.setTitle("Memory : Accueil");
+
+        // Récupération de l'ID du bouton "Setting" et assignation de la fonction
+        Button btnPlay = (Button) findViewById(R.id.play);
+        btnPlay.setOnClickListener(play);
 
         // Récupération de l'ID du bouton "Setting" et assignation de la fonction
         Button btnSettings = (Button) findViewById(R.id.settings);
@@ -46,17 +47,24 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    // Fonction qui démarre l'activé "Settings"
+    // Fonction qui démarre l'activé "À propos"
     View.OnClickListener about = new View.OnClickListener() {
         public void onClick(View v) {
             Intent intent = new Intent(MainActivity.this, AboutActivity.class);
             startActivity(intent);
         }
     };
-    // Fonction qui démarre l'activé "Settings"
+    // Fonction qui démarre l'activé "Meilleurs scores"
     View.OnClickListener bestScores = new View.OnClickListener() {
         public void onClick(View v) {
             Intent intent = new Intent(MainActivity.this, BestScoresActivity.class);
+            startActivity(intent);
+        }
+    };
+    // Fonction qui démarre l'activé "Meilleurs scores"
+    View.OnClickListener play = new View.OnClickListener() {
+        public void onClick(View v) {
+            Intent intent = new Intent(MainActivity.this,PlayActivity.class);
             startActivity(intent);
         }
     };

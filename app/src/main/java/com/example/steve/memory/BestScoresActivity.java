@@ -15,7 +15,7 @@ public class BestScoresActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bestscores);
 
         // Définition du titre de l'activité
-        this.setTitle("Memory : Best Scores");
+        this.setTitle("Memory : Meilleurs scores");
 
     }
 

@@ -43,7 +43,14 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     private Context 	mContext;
 
     ArrayList<Bitmap> cartesDisponnibles = new ArrayList<Bitmap>();
-    ArrayList<Bitmap> cartes = new ArrayList<Bitmap>();
+    ArrayList<Carte> cartes = new ArrayList<Carte>();
+    Bitmap recto;
+    int tailleImage;
+    int tailleMarge;
+    int tailleCanvasWidth;
+    int tailleCanvasHeight;
+    int tailleEcranWidht;
+    int tailleEcranHeight;
 
     public PlayView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -58,6 +65,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
         mContext	= context;
         mRes 		= mContext.getResources();
+        recto       = BitmapFactory.decodeResource(mRes, R.drawable.recto);
 
         // creation du thread
         cv_thread   = new Thread(this);
@@ -71,7 +79,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     }
     // Callback : cycle de vie de la surfaceview
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        initparameters();
+        //initparameters();
     }
 
     public void surfaceCreated(SurfaceHolder arg0) {
@@ -134,14 +142,25 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     private void nDraw(Canvas canvas) {
 
         // Détermination de la taille des images et des marges
-        int tailleImage = (canvas.getWidth()/5);
-        int tailleMarge = (tailleImage/3);
+        tailleImage = (canvas.getWidth()/5);
+        tailleMarge = (tailleImage/3);
+
+        // Taille du canvas
+        tailleCanvasWidth = canvas.getHeight();
+        tailleCanvasHeight = canvas.getHeight();
+
+        // Taille écran
+        tailleEcranWidht = getWidth();
+        tailleEcranHeight = getHeight();
+
+
+
+        //Log.i("-> INFO <-", "TailleImage = "+tailleImage +" / TailleMarge = " +tailleMarge);
 
         int carte = 0;
-
         for(int j=0; j<5; j++){
             for(int k=0; k<4; k++){
-                Bitmap image = BITMAP_RESIZER(cartes.get(carte),(tailleImage),(tailleImage));
+                Bitmap image = BITMAP_RESIZER(cartes.get(carte).vueCarte,(tailleImage),(tailleImage));
                 canvas.drawBitmap(image, ((tailleImage + tailleMarge)*k), ((tailleImage + tailleMarge)*j), new Paint());
                 carte++;
             }
@@ -170,27 +189,88 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
     // fonction permettant de recuperer les evenements tactiles
     public boolean onTouchEvent (MotionEvent event) {
-        Log.i("-> FCT <-", "onTouchEvent: "+ event.getX());
-        if (event.getY()<50) {
-            onKeyDown(KeyEvent.KEYCODE_DPAD_UP, null);
-        } else if (event.getY()>getHeight()-50) {
-            if (event.getX()>getWidth()-50) {
-                onKeyDown(KeyEvent.KEYCODE_0, null);
-            } else {
-                onKeyDown(KeyEvent.KEYCODE_DPAD_DOWN, null);
-            }
-        } else if (event.getX()<50) {
-            onKeyDown(KeyEvent.KEYCODE_DPAD_LEFT, null);
-        } else if (event.getX()>getWidth()-50) {
-            onKeyDown(KeyEvent.KEYCODE_DPAD_RIGHT, null);
+        Log.i("-> FCT <-", "Toucher X : "+ event.getX() + " / Y : " + event.getY());
+
+        // Première ligne
+
+        if(event.getX() <= tailleImage && (event.getY() <= tailleImage)){
+            cartes.get(0).vueCarte = cartes.get(0).versoCarte;
         }
+        else if(event.getX() >= ((tailleImage*1) + (tailleMarge*1)) && event.getX() <= ((tailleImage*2) + (tailleMarge*1)) && (event.getY() <= tailleImage)){
+            cartes.get(1).vueCarte = cartes.get(1).versoCarte;
+        }
+        else if(event.getX() >= ((tailleImage*2) + (tailleMarge*2)) && event.getX() <= ((tailleImage*3) + (tailleMarge*2)) && (event.getY() <= tailleImage)){
+            cartes.get(2).vueCarte = cartes.get(2).versoCarte;
+        }
+        else if(event.getX() >= ((tailleImage*3) + (tailleMarge*3)) && event.getX() <= ((tailleImage*4) + (tailleMarge*3)) && (event.getY() <= tailleImage)){
+            cartes.get(3).vueCarte = cartes.get(3).versoCarte;
+        }
+
+        // Deuxième ligne
+
+        else if(event.getX() <= tailleImage && event.getY() >= ((tailleImage*1) + (tailleMarge*1)) && event.getY() <= ((tailleImage*2) + (tailleMarge*1))){
+            cartes.get(4).vueCarte = cartes.get(4).versoCarte;
+        }
+        else if(event.getX() >= ((tailleImage*1) + (tailleMarge*1)) && event.getX() <= ((tailleImage*2) + (tailleMarge*1)) && event.getY() >= ((tailleImage*1) + (tailleMarge*1)) && event.getY() <= ((tailleImage*2) + (tailleMarge*1))){
+            cartes.get(5).vueCarte = cartes.get(5).versoCarte;
+        }
+        else if(event.getX() >= ((tailleImage*2) + (tailleMarge*2)) && event.getX() <= ((tailleImage*3) + (tailleMarge*2)) && event.getY() >= ((tailleImage*1) + (tailleMarge*1)) && event.getY() <= ((tailleImage*2) + (tailleMarge*1))){
+            cartes.get(6).vueCarte = cartes.get(6).versoCarte;
+        }
+        else if(event.getX() >= ((tailleImage*3) + (tailleMarge*3)) && event.getX() <= ((tailleImage*4) + (tailleMarge*3)) && event.getY() >= ((tailleImage*1) + (tailleMarge*1)) && event.getY() <= ((tailleImage*2) + (tailleMarge*1))){
+            cartes.get(7).vueCarte = cartes.get(7).versoCarte;
+        }
+
+        // Troisième ligne
+
+        else if(event.getX() <= tailleImage && event.getY() >= ((tailleImage*2) + (tailleMarge*2)) && event.getY() <= ((tailleImage*3) + (tailleMarge*2))){
+            cartes.get(8).vueCarte = cartes.get(8).versoCarte;
+        }
+        else if(event.getX() >= ((tailleImage*1) + (tailleMarge*1)) && event.getX() <= ((tailleImage*2) + (tailleMarge*1)) && event.getY() >= ((tailleImage*2) + (tailleMarge*2)) && event.getY() <= ((tailleImage*3) + (tailleMarge*2))){
+            cartes.get(9).vueCarte = cartes.get(9).versoCarte;
+        }
+        else if(event.getX() >= ((tailleImage*2) + (tailleMarge*2)) && event.getX() <= ((tailleImage*3) + (tailleMarge*2)) && event.getY() >= ((tailleImage*2) + (tailleMarge*2)) && event.getY() <= ((tailleImage*3) + (tailleMarge*2))){
+            cartes.get(10).vueCarte = cartes.get(10).versoCarte;
+        }
+        else if(event.getX() >= ((tailleImage*3) + (tailleMarge*3)) && event.getX() <= ((tailleImage*4) + (tailleMarge*3)) && event.getY() >= ((tailleImage*2) + (tailleMarge*2)) && event.getY() <= ((tailleImage*3) + (tailleMarge*2))){
+            cartes.get(11).vueCarte = cartes.get(11).versoCarte;
+        }
+
+        // Quatrième ligne
+
+        else if(event.getX() <= tailleImage && event.getY() >= ((tailleImage*3) + (tailleMarge*3)) && event.getY() <= ((tailleImage*4) + (tailleMarge*3))){
+            cartes.get(12).vueCarte = cartes.get(12).versoCarte;
+        }
+        else if(event.getX() >= ((tailleImage*1) + (tailleMarge*1)) && event.getX() <= ((tailleImage*2) + (tailleMarge*1)) && event.getY() >= ((tailleImage*3) + (tailleMarge*3)) && event.getY() <= ((tailleImage*4) + (tailleMarge*3))){
+            cartes.get(13).vueCarte = cartes.get(13).versoCarte;
+        }
+        else if(event.getX() >= ((tailleImage*2) + (tailleMarge*2)) && event.getX() <= ((tailleImage*3) + (tailleMarge*2)) && event.getY() >= ((tailleImage*3) + (tailleMarge*3)) && event.getY() <= ((tailleImage*4) + (tailleMarge*3))){
+            cartes.get(14).vueCarte = cartes.get(14).versoCarte;
+        }
+        else if(event.getX() >= ((tailleImage*3) + (tailleMarge*3)) && event.getX() <= ((tailleImage*4) + (tailleMarge*3)) && event.getY() >= ((tailleImage*3) + (tailleMarge*3)) && event.getY() <= ((tailleImage*4) + (tailleMarge*3))){
+            cartes.get(15).vueCarte = cartes.get(15).versoCarte;
+        }
+
+        // Cinquième ligne
+
+        else if(event.getX() <= tailleImage && event.getY() >= ((tailleImage*4) + (tailleMarge*4)) && event.getY() <= ((tailleImage*5) + (tailleMarge*4))){
+            cartes.get(16).vueCarte = cartes.get(16).versoCarte;
+        }
+        else if(event.getX() >= ((tailleImage*1) + (tailleMarge*1)) && event.getX() <= ((tailleImage*2) + (tailleMarge*1)) && event.getY() >= ((tailleImage*4) + (tailleMarge*4)) && event.getY() <= ((tailleImage*5) + (tailleMarge*4))){
+            cartes.get(17).vueCarte = cartes.get(17).versoCarte;
+        }
+        else if(event.getX() >= ((tailleImage*2) + (tailleMarge*2)) && event.getX() <= ((tailleImage*3) + (tailleMarge*2)) && event.getY() >= ((tailleImage*4) + (tailleMarge*4)) && event.getY() <= ((tailleImage*5) + (tailleMarge*4))){
+            cartes.get(18).vueCarte = cartes.get(18).versoCarte;
+        }
+        else if(event.getX() >= ((tailleImage*3) + (tailleMarge*3)) && event.getX() <= ((tailleImage*4) + (tailleMarge*3)) && event.getY() >= ((tailleImage*4) + (tailleMarge*4)) && event.getY() <= ((tailleImage*5) + (tailleMarge*4))){
+            cartes.get(19).vueCarte = cartes.get(19).versoCarte;
+        }
+
         return super.onTouchEvent(event);
     }
 
     public void initparameters() {
-
         repartitionCartes();
-
         if ((cv_thread!=null) && (!cv_thread.isAlive())) {
             cv_thread.start();
             Log.e("-FCT-", "cv_thread.start()");
@@ -200,24 +280,26 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     // Fonction qui réparti les carte
     private void repartitionCartes(){
         int numero;
-        for(int i=1; i<=10; i++){
+        for(int i=1; i<=20; i++){
 
-            if(i>10){
-                numero = (i-10);
-            }else{
-                numero = i;
-            }
+            if(i>10){numero = (i-10);}else{numero = i;}
 
             int resID = getResources().getIdentifier("animaux" + numero , "drawable", mContext.getPackageName());
             cartesDisponnibles.add(BitmapFactory.decodeResource(mRes, resID));
         }
 
-        for(int z=0; z<10; z++){
+        for(int z=0; z<20; z++){
             int nbCarteDispo = cartesDisponnibles.size();
             Random r = new Random();
             int aleatoire = r.nextInt(nbCarteDispo);
 
-            cartes.add(cartesDisponnibles.get(aleatoire));
+            Bitmap vueCarte = recto;
+            Bitmap rectoCarte = recto;
+            Bitmap versoCarte = cartesDisponnibles.get(aleatoire);
+
+            Carte carte = new Carte(vueCarte, rectoCarte, versoCarte);
+            cartes.add(carte);
+
             cartesDisponnibles.remove(aleatoire);
         }
     }

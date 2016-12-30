@@ -36,7 +36,8 @@ public class BestScoresActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                Intent intent = new Intent(BestScoresActivity.this, MainActivity.class);
+                startActivity(intent);
             default:
                 return super.onOptionsItemSelected(item);
         }

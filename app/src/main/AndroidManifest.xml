@@ -18,14 +18,7 @@
         <activity android:name=".AboutActivity" />
         <activity android:name=".BestScoresActivity" />
         <activity android:name=".PlayActivity" />
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.steve.memory.MainActivity" />
-        </activity>
-        <activity android:name=".Settings1Activity"></activity>
+        <activity android:name=".SettingsActivity" />
     </application>
 
 </manifest>

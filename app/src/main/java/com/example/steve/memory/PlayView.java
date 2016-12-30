@@ -3,35 +3,24 @@ package com.example.steve.memory;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
-import android.graphics.PorterDuff;
-import android.graphics.Rect;
-import android.graphics.RectF;
+import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static android.R.attr.bitmap;
-import static android.R.attr.width;
-import static com.example.steve.memory.R.attr.height;
-import static java.lang.System.in;
 
 /**
  * Created by Steve on 28/11/2016.
@@ -55,6 +44,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     int tailleMarge;
     int nbPairesTrouvees=0;
     int nbCoups=0;
+    MediaPlayer mediaPlayer;
 
     boolean canPlay = true;
 
@@ -72,6 +62,9 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         mContext	= context;
         mRes 		= mContext.getResources();
         recto       = BitmapFactory.decodeResource(mRes, R.drawable.recto1);
+
+        int resID = getResources().getIdentifier("click", "raw", mContext.getPackageName());
+        mediaPlayer = MediaPlayer.create(this.mContext,resID);
 
         // creation du thread
         cv_thread   = new Thread(this);
@@ -260,10 +253,12 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
             if(carteTouche !=20){
                 if(cartesTouchees.size() == 0){
+                    mediaPlayer.start();
                     cartesTouchees.add(carteTouche);
                     cartes.get(carteTouche).vueCarte = cartes.get(carteTouche).versoCarte;
                 }else if(cartesTouchees.size() == 1){
                     if(cartesTouchees.get(0) != carteTouche){
+                        mediaPlayer.start();
                         cartesTouchees.add(carteTouche);
                         cartes.get(carteTouche).vueCarte = cartes.get(carteTouche).versoCarte;
                     }
@@ -282,7 +277,6 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                         new CountDownTimer(2000, 1000) {
 
                             public void onTick(long millisUntilFinished) {
-
                             }
 
                             public void onFinish() {
@@ -291,7 +285,6 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                                 cartesTouchees.clear();
                                 canPlay = true;
                             }
-
                         }.start();
                     }
                 }

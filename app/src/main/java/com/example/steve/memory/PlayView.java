@@ -3,6 +3,7 @@ package com.example.steve.memory;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -45,6 +46,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     int nbPairesTrouvees=0;
     int nbCoups=0;
     MediaPlayer mediaPlayer;
+    Boolean soundClick;
 
     boolean canPlay = true;
 
@@ -63,8 +65,13 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         mRes 		= mContext.getResources();
         recto       = BitmapFactory.decodeResource(mRes, R.drawable.recto1);
 
+        // Charge le son Click
         int resID = getResources().getIdentifier("click", "raw", mContext.getPackageName());
         mediaPlayer = MediaPlayer.create(this.mContext,resID);
+
+        // Récupère les paramètres
+        SharedPreferences prefs = mContext.getSharedPreferences("params", Context.MODE_PRIVATE);
+        soundClick = prefs.getBoolean("soundClick", true);
 
         // creation du thread
         cv_thread   = new Thread(this);
@@ -253,12 +260,14 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
             if(carteTouche !=20){
                 if(cartesTouchees.size() == 0){
-                    mediaPlayer.start();
+                    if(soundClick)
+                        mediaPlayer.start();
                     cartesTouchees.add(carteTouche);
                     cartes.get(carteTouche).vueCarte = cartes.get(carteTouche).versoCarte;
                 }else if(cartesTouchees.size() == 1){
                     if(cartesTouchees.get(0) != carteTouche){
-                        mediaPlayer.start();
+                        if(soundClick)
+                            mediaPlayer.start();
                         cartesTouchees.add(carteTouche);
                         cartes.get(carteTouche).vueCarte = cartes.get(carteTouche).versoCarte;
                     }
@@ -274,7 +283,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                         Log.i("-> FCT <-", "PERDU");
 
                         canPlay = false;
-                        new CountDownTimer(2000, 1000) {
+                        new CountDownTimer(1500, 1000) {
 
                             public void onTick(long millisUntilFinished) {
                             }

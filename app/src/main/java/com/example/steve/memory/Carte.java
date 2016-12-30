@@ -12,11 +12,13 @@ public class Carte {
     Bitmap rectoCarte;
     Bitmap versoCarte;
     Boolean dejaretourne;
+    Integer numeroCarte;
 
-    public Carte(Bitmap vueCarte, Bitmap rectoCarte, Bitmap versoCarte){
+    public Carte(Bitmap vueCarte, Bitmap rectoCarte, Bitmap versoCarte, Integer numeroCarte){
         this.vueCarte = vueCarte;
         this.rectoCarte = rectoCarte;
         this.versoCarte = versoCarte;
+        this.numeroCarte = numeroCarte;
     }
 
 }

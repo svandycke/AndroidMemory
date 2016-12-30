@@ -29,7 +29,7 @@ import java.util.Random;
 
 public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Runnable  {
 
-    private Thread  cv_thread;
+    Thread  cv_thread = null;
     SurfaceHolder holder;
     private boolean in = true;
 
@@ -126,21 +126,14 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
      * on endort le thread, on modifie le compteur d'animation, on prend la main pour dessiner et on dessine puis on libère le canvas
      */
     public void run() {
-        Canvas c = null;
-        while (in) {
-            try {
-                cv_thread.sleep(40);
-                try {
-                    c = holder.lockCanvas(null);
-                    nDraw(c);
-                } finally {
-                    if (c != null) {
-                        holder.unlockCanvasAndPost(c);
-                    }
-                }
-            } catch(Exception e) {
-                Log.e("-> RUN <-", "PB DANS RUN");
-            }
+        while (in == true) {
+            //-- On peut dessiner si le holder est disponible
+            if (!holder.getSurface().isValid())
+                continue;
+            //-- Définition d'un canevas, et veroullage le temps que l'on dessine dessus
+            Canvas c = holder.lockCanvas();
+            nDraw(c);
+            holder.unlockCanvasAndPost(c); //-- Libération du dessin
         }
     }
 
@@ -329,7 +322,6 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         repartitionCartes();
         if ((cv_thread!=null) && (!cv_thread.isAlive())) {
             cv_thread.start();
-            Log.e("-FCT-", "cv_thread.start()");
         }
     }
 

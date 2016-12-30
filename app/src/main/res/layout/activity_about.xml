@@ -4,14 +4,82 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <TextView
-        android:text="Memory développé par"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/txt1"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:textSize="20dp"
-        android:textAlignment="center" />
+        android:layout_alignParentEnd="true">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Application réalisée par :"
+                android:id="@+id/textView3"
+                android:textAlignment="center"
+                android:layout_weight="1"
+                android:textSize="23dp"
+                android:layout_marginTop="90px"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Steve VANDYCKE"
+                android:id="@+id/textView4"
+                android:textAlignment="center"
+                android:layout_weight="1"
+                android:textSize="23dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="94dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Ali BAYRACK"
+                android:id="@+id/textView5"
+                android:textAlignment="center"
+                android:layout_weight="1"
+                android:textSize="23dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="94dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Tous droits réservés © 2016"
+                android:id="@+id/textView6"
+                android:textAlignment="center"
+                android:layout_weight="1"
+                android:textSize="23dp"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
-public class PlayActivity extends Activity {
+public class PlayActivity extends AppCompatActivity {
 
     private PlayView PlayView;
 
@@ -23,7 +23,7 @@ public class PlayActivity extends Activity {
         this.setTitle("Memory : Jouer");
 
         // Activation de l'ActionBar
-        //setupActionBar();
+        setupActionBar();
     }
 
     @Override
@@ -38,12 +38,10 @@ public class PlayActivity extends Activity {
     }
 
 
-    /*
     // Activation de l'ActionBar
     private void setupActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            // Show the Up button in the action bar.
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
@@ -56,5 +54,5 @@ public class PlayActivity extends Activity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }*/
+    }
 }

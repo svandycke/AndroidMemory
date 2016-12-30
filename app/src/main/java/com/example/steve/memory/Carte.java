@@ -11,7 +11,6 @@ public class Carte {
     Bitmap vueCarte;
     Bitmap rectoCarte;
     Bitmap versoCarte;
-    Boolean dejaretourne;
     Integer numeroCarte;
 
     public Carte(Bitmap vueCarte, Bitmap rectoCarte, Bitmap versoCarte, Integer numeroCarte){

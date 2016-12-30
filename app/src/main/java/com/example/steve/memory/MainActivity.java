@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     // Fonction qui démarre l'activé "Meilleurs scores"
     View.OnClickListener bestScores = new View.OnClickListener() {
         public void onClick(View v) {
-            Intent intent = new Intent(MainActivity.this, Settings1Activity.class);
+            Intent intent = new Intent(MainActivity.this, BestScoresActivity.class);
             startActivity(intent);
         }
     };

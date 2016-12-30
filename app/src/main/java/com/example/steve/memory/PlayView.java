@@ -295,9 +295,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                         }.start();
                     }
                 }
-
                 nbCoups++;
-
             }
 
             if(nbPairesTrouvees == 10){
@@ -307,8 +305,8 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Rejouer une partie",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                initparameters();
                                 dialog.dismiss();
+                                initparameters();
                             }
                         });
                 alertDialog.show();

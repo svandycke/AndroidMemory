@@ -1,6 +1,9 @@
 package com.example.steve.memory;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -50,6 +53,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     Bitmap recto;
     int tailleImage;
     int tailleMarge;
+    int nbPairesTrouvees=0;
 
     boolean canPlay = true;
 
@@ -66,7 +70,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
         mContext	= context;
         mRes 		= mContext.getResources();
-        recto       = BitmapFactory.decodeResource(mRes, R.drawable.recto);
+        recto       = BitmapFactory.decodeResource(mRes, R.drawable.recto1);
 
         // creation du thread
         cv_thread   = new Thread(this);
@@ -267,6 +271,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                 if (cartesTouchees.size() == 2) {
                     if (comparePaire()) {
                         cartesTouchees.clear();
+                        nbPairesTrouvees++;
                         canPlay = true;
                         Log.i("-> FCT <-", "BRAVO");
                     } else {
@@ -289,6 +294,21 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                         }.start();
                     }
                 }
+            }
+
+            if(nbPairesTrouvees == 10){
+                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                alertDialog.setTitle("Partie terminée");
+                alertDialog.setMessage("Ton score : ");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Retour à l'accueil",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                Intent intent = new Intent(mContext, MainActivity.class);
+                                mContext.startActivity(intent);
+                            }
+                        });
+                alertDialog.show();
             }
         }
 

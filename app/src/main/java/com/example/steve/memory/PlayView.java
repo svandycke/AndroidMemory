@@ -54,6 +54,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     int tailleImage;
     int tailleMarge;
     int nbPairesTrouvees=0;
+    int nbCoups=0;
 
     boolean canPlay = true;
 
@@ -84,7 +85,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     }
     // Callback : cycle de vie de la surfaceview
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        //initparameters();
+
     }
 
     public void surfaceCreated(SurfaceHolder arg0) {
@@ -294,18 +295,20 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                         }.start();
                     }
                 }
+
+                nbCoups++;
+
             }
 
             if(nbPairesTrouvees == 10){
                 AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                 alertDialog.setTitle("Partie terminée");
-                alertDialog.setMessage("Ton score : ");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Retour à l'accueil",
+                alertDialog.setMessage("Nombre de coups : " + nbCoups);
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Rejouer une partie",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                initparameters();
                                 dialog.dismiss();
-                                Intent intent = new Intent(mContext, MainActivity.class);
-                                mContext.startActivity(intent);
                             }
                         });
                 alertDialog.show();
@@ -316,6 +319,13 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     }
 
     public void initparameters() {
+        nbCoups = 0;
+        nbPairesTrouvees = 0;
+        cartes.clear();
+        cartesTouchees.clear();
+        cartesDisponnibles.clear();
+        canPlay = true;
+
         repartitionCartes();
         if ((cv_thread!=null) && (!cv_thread.isAlive())) {
             cv_thread.start();

@@ -11,9 +11,9 @@
     tools:context="com.example.steve.memory.PlayActivity">
 
 
-
     <com.example.steve.memory.PlayView android:id="@+id/PlayView"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"/>
+        android:layout_height="fill_parent"
+        android:layout_marginTop="150px"/>
 
 </RelativeLayout>

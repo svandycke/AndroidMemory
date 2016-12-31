@@ -137,7 +137,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         }
     }
 
-    // dessin du jeu (fond uni, en fonction du jeu gagne ou pas dessin du plateau et du joueur des diamants et des fleches)
+    // dessin du jeu
     private void nDraw(Canvas canvas) {
 
         // Détermination de la taille des images et des marges

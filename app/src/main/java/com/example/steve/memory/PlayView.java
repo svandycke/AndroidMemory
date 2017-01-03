@@ -312,12 +312,15 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                 AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                 alertDialog.setTitle("Partie terminée");
                 alertDialog.setMessage("Nombre de coups : " + nbCoups);
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Rejouer une partie",
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Retour à l'accueil",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                                 in = false;
-                                initparameters();
+
+                                Intent intent = new Intent(mContext, MainActivity.class);
+                                mContext.startActivity(intent);
+
                             }
                         });
                 alertDialog.show();

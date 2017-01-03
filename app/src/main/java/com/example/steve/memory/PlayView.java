@@ -145,21 +145,23 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     // dessin du jeu
     private void nDraw(Canvas canvas) {
 
-        if(!redimenssionne){
-            // Détermination de la taille des images et des marges
-            tailleImage = (canvas.getWidth()/5);
-            tailleMarge = (tailleImage/3);
+        if(in == true) {
+            if (!redimenssionne) {
+                // Détermination de la taille des images et des marges
+                tailleImage = (canvas.getWidth() / 5);
+                tailleMarge = (tailleImage / 3);
 
-            redimenssionne_image(tailleImage);
-            redimenssionne = true;
-        }
+                redimenssionne_image(tailleImage);
+                redimenssionne = true;
+            }
 
-        int carte = 0;
-        for(int j=0; j<5; j++){
-            for(int k=0; k<4; k++){
-                //Bitmap image = BITMAP_RESIZER(cartes.get(carte).vueCarte,(tailleImage),(tailleImage));
-                canvas.drawBitmap(cartes.get(carte).vueCarte, ((tailleImage + tailleMarge)*k), ((tailleImage + tailleMarge)*j), new Paint());
-                carte++;
+            int carte = 0;
+            for (int j = 0; j < 5; j++) {
+                for (int k = 0; k < 4; k++) {
+                    //Bitmap image = BITMAP_RESIZER(cartes.get(carte).vueCarte,(tailleImage),(tailleImage));
+                    canvas.drawBitmap(cartes.get(carte).vueCarte, ((tailleImage + tailleMarge) * k), ((tailleImage + tailleMarge) * j), new Paint());
+                    carte++;
+                }
             }
         }
     }
@@ -198,7 +200,6 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     public boolean onTouchEvent (MotionEvent event) {
 
         if (canPlay) {
-
             int carteTouche = 20;
 
             // Première ligne
@@ -261,7 +262,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                 carteTouche = 19;
             }
 
-            if(carteTouche !=20){
+            if(carteTouche !=20 && cartes.get(carteTouche).active){
                 if(cartesTouchees.size() == 0){
                     if(soundClick)
                         mediaPlayer.start();
@@ -278,6 +279,10 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
                 if (cartesTouchees.size() == 2) {
                     if (comparePaire()) {
+
+                        cartes.get(cartesTouchees.get(0)).active = false;
+                        cartes.get(cartesTouchees.get(1)).active = false;
+
                         cartesTouchees.clear();
                         nbPairesTrouvees++;
                         canPlay = true;

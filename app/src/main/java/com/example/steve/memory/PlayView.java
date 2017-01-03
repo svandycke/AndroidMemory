@@ -47,6 +47,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     int nbCoups=0;
     MediaPlayer mediaPlayer;
     Boolean soundClick;
+    Boolean redimenssionne = false;
 
     boolean canPlay = true;
 
@@ -80,8 +81,6 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
         // Initialisation des paramètres
         initparameters();
-
-
     }
     // Callback : cycle de vie de la surfaceview
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
@@ -140,15 +139,20 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     // dessin du jeu
     private void nDraw(Canvas canvas) {
 
-        // Détermination de la taille des images et des marges
-        tailleImage = (canvas.getWidth()/5);
-        tailleMarge = (tailleImage/3);
+        if(!redimenssionne){
+            // Détermination de la taille des images et des marges
+            tailleImage = (canvas.getWidth()/5);
+            tailleMarge = (tailleImage/3);
+
+            redimenssionne_image(tailleImage);
+            redimenssionne = true;
+        }
 
         int carte = 0;
         for(int j=0; j<5; j++){
             for(int k=0; k<4; k++){
-                Bitmap image = BITMAP_RESIZER(cartes.get(carte).vueCarte,(tailleImage),(tailleImage));
-                canvas.drawBitmap(image, ((tailleImage + tailleMarge)*k), ((tailleImage + tailleMarge)*j), new Paint());
+                //Bitmap image = BITMAP_RESIZER(cartes.get(carte).vueCarte,(tailleImage),(tailleImage));
+                canvas.drawBitmap(cartes.get(carte).vueCarte, ((tailleImage + tailleMarge)*k), ((tailleImage + tailleMarge)*j), new Paint());
                 carte++;
             }
         }
@@ -350,6 +354,15 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
             cartes.add(carte);
 
             cartesDisponnibles.remove(aleatoire);
+        }
+    }
+
+    // Fonction qui est appelé pour redimenssionner les images
+    private void redimenssionne_image(int taille){
+        for(int e=0; e<cartes.size(); e++){
+            cartes.get(e).vueCarte = BITMAP_RESIZER(cartes.get(e).vueCarte,(tailleImage),(tailleImage));
+            cartes.get(e).rectoCarte = BITMAP_RESIZER(cartes.get(e).rectoCarte,(tailleImage),(tailleImage));
+            cartes.get(e).versoCarte = BITMAP_RESIZER(cartes.get(e).versoCarte,(tailleImage),(tailleImage));
         }
     }
 

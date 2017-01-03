@@ -3,6 +3,7 @@ package com.example.steve.memory;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -133,6 +134,11 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
             Canvas c = holder.lockCanvas();
             nDraw(c);
             holder.unlockCanvasAndPost(c); //-- Libération du dessin
+
+            // Pour dessiner à 50 fps
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {}
         }
     }
 
@@ -297,7 +303,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                 nbCoups++;
             }
 
-            if(nbPairesTrouvees == 10){
+            if(nbPairesTrouvees == 1){
                 AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                 alertDialog.setTitle("Partie terminée");
                 alertDialog.setMessage("Nombre de coups : " + nbCoups);
@@ -305,6 +311,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
+                                in = false;
                                 initparameters();
                             }
                         });
@@ -322,11 +329,14 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         cartesTouchees.clear();
         cartesDisponnibles.clear();
         canPlay = true;
+        redimenssionne = false;
 
         repartitionCartes();
         if ((cv_thread!=null) && (!cv_thread.isAlive())) {
             cv_thread.start();
         }
+
+        in=true;
     }
 
     // Fonction qui réparti les carte

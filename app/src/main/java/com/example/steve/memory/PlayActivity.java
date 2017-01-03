@@ -29,12 +29,12 @@ public class PlayActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        PlayView.pause();
+        //PlayView.pause();
     }
     @Override
     protected void onResume() {
         super.onResume();
-        PlayView.resume();
+        //PlayView.resume();
     }
 
 

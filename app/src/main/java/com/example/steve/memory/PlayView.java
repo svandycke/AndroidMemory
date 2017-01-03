@@ -303,7 +303,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                 nbCoups++;
             }
 
-            if(nbPairesTrouvees == 1){
+            if(nbPairesTrouvees == 10){
                 AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                 alertDialog.setTitle("Partie terminée");
                 alertDialog.setMessage("Nombre de coups : " + nbCoups);

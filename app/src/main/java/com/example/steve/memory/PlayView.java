@@ -49,6 +49,9 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     MediaPlayer mediaPlayer;
     Boolean soundClick;
     Boolean redimenssionne = false;
+    long timeLeft = 180000;
+    boolean gameIsFinish = false;
+
 
     boolean canPlay = true;
 
@@ -158,11 +161,14 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
             int carte = 0;
             for (int j = 0; j < 5; j++) {
                 for (int k = 0; k < 4; k++) {
-                    //Bitmap image = BITMAP_RESIZER(cartes.get(carte).vueCarte,(tailleImage),(tailleImage));
                     canvas.drawBitmap(cartes.get(carte).vueCarte, ((tailleImage + tailleMarge) * k), ((tailleImage + tailleMarge) * j), new Paint());
                     carte++;
                 }
             }
+
+            //if(nbCoups>0)
+                //setLeftTime();
+
         }
     }
 
@@ -199,7 +205,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     // fonction permettant de recuperer les evenements tactiles
     public boolean onTouchEvent (MotionEvent event) {
 
-        if (canPlay) {
+        if (canPlay && !gameIsFinish) {
             int carteTouche = 20;
 
             // Première ligne
@@ -263,6 +269,22 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
             }
 
             if(carteTouche !=20 && cartes.get(carteTouche).active){
+
+                if(nbCoups==0){
+                    new CountDownTimer(timeLeft, 1000) {
+
+                        public void onTick(long millisUntilFinished) {
+                            setTimeLeft(millisUntilFinished);
+                        }
+
+                        public void onFinish() {
+                            gameIsFinish = true;
+                            gameIsFinish();
+                        }
+                    }.start();
+
+                }
+
                 if(cartesTouchees.size() == 0){
                     if(soundClick)
                         mediaPlayer.start();
@@ -306,25 +328,13 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                     }
                 }
                 nbCoups++;
+
+                // Met à jour le label pour afficher le nombre de coups
+                ((PlayActivity) getContext()).setNbCoups("Nb coups : "+ nbCoups);
             }
 
-            if(nbPairesTrouvees == 10){
-                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-                alertDialog.setTitle("Partie terminée");
-                alertDialog.setMessage("Nombre de coups : " + nbCoups);
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Retour à l'accueil",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                in = false;
+            gameIsFinish();
 
-                                Intent intent = new Intent(mContext, MainActivity.class);
-                                mContext.startActivity(intent);
-
-                            }
-                        });
-                alertDialog.show();
-            }
         }
 
         return super.onTouchEvent(event);
@@ -338,6 +348,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         cartesDisponnibles.clear();
         canPlay = true;
         redimenssionne = false;
+        gameIsFinish = false;
 
         repartitionCartes();
         if ((cv_thread!=null) && (!cv_thread.isAlive())) {
@@ -384,4 +395,56 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         }
     }
 
+    // Fonction qui affiche le temps restant
+    private void setTimeLeft(long timeleft){
+
+
+        long secondes = (timeleft/1000)%60;
+        long minutes = (timeleft/1000)/60;
+
+        String text = String.format("Temps restant : %02d:%02d",minutes,secondes);
+
+        // Met à jour le label pour afficher le nombre de coups
+        ((PlayActivity) getContext()).setTimeLeft(text);
+
+
+    }
+
+    // Fonction qui indique que la partie est terminée
+    private void gameIsFinish(){
+        if(nbPairesTrouvees == 10){
+            gameIsFinish = true;
+            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+            alertDialog.setTitle("Partie terminée");
+            alertDialog.setMessage("Nombre de coups : " + nbCoups);
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Retour à l'accueil",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            in = false;
+
+                            Intent intent = new Intent(mContext, MainActivity.class);
+                            mContext.startActivity(intent);
+
+                        }
+                    });
+            alertDialog.show();
+        }else if(gameIsFinish && nbPairesTrouvees < 10){
+            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+            alertDialog.setTitle("Vous avez perdu");
+            alertDialog.setMessage("Le temps restant est écoulé");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Retour à l'accueil",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            in = false;
+
+                            Intent intent = new Intent(mContext, MainActivity.class);
+                            mContext.startActivity(intent);
+
+                        }
+                    });
+            alertDialog.show();
+        }
+    }
 }

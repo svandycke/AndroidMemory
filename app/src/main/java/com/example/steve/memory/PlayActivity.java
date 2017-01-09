@@ -8,10 +8,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
-public class PlayActivity extends AppCompatActivity {
+import org.w3c.dom.Text;
+
+
+public class PlayActivity extends AppCompatActivity{
 
     private PlayView PlayView;
+    private TextView nbCoups;
+    private TextView leftTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +35,25 @@ public class PlayActivity extends AppCompatActivity {
 
         // Vérouillage du mode paysage
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        nbCoups = (TextView)findViewById(R.id.nbCoups);
+        leftTime = (TextView)findViewById(R.id.leftTime);
+    }
+
+    public void setNbCoups(final String txt){
+        PlayActivity.this.runOnUiThread(new Runnable() {
+            public void run() {
+                nbCoups.setText(txt);
+            }
+        });
+    }
+
+    public void setTimeLeft(final String txt){
+        PlayActivity.this.runOnUiThread(new Runnable() {
+            public void run() {
+                leftTime.setText(txt);
+            }
+        });
     }
 
     @Override
@@ -61,3 +86,6 @@ public class PlayActivity extends AppCompatActivity {
         }
     }
 }
+
+
+

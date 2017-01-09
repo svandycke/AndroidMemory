@@ -12,9 +12,32 @@
     android:screenOrientation="portrait">
 
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20px">
+
+        <TextView
+            android:text="Temps restant : 03:00"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/leftTime"
+            android:layout_weight="1"
+            android:layout_marginLeft="50px"/>
+
+        <TextView
+            android:text="Nb coups : 0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/nbCoups"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+
     <com.example.steve.memory.PlayView android:id="@+id/PlayView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_marginTop="50px"/>
+        android:layout_marginTop="120px"/>
 
 </RelativeLayout>

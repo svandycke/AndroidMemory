@@ -72,7 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="94dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Tous droits réservés © 2016"
+                android:text="Tous droits réservés © 2017"
                 android:id="@+id/textView6"
                 android:textAlignment="center"
                 android:layout_weight="1"

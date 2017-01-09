@@ -49,8 +49,10 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     MediaPlayer mediaPlayer;
     Boolean soundClick;
     Boolean redimenssionne = false;
-    long timeLeft = 180000;
+    long timeLeft = 180000; //
     boolean gameIsFinish = false;
+    CountDownTimer counterTimeLeft = null;
+    CountDownTimer counterReturnCard = null;
 
 
     boolean canPlay = true;
@@ -165,10 +167,6 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                     carte++;
                 }
             }
-
-            //if(nbCoups>0)
-                //setLeftTime();
-
         }
     }
 
@@ -271,7 +269,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
             if(carteTouche !=20 && cartes.get(carteTouche).active){
 
                 if(nbCoups==0){
-                    new CountDownTimer(timeLeft, 1000) {
+                    counterReturnCard = new CountDownTimer(timeLeft, 1000) {
 
                         public void onTick(long millisUntilFinished) {
                             setTimeLeft(millisUntilFinished);
@@ -313,7 +311,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                         Log.i("-> FCT <-", "PERDU");
 
                         canPlay = false;
-                        new CountDownTimer(1500, 1000) {
+                        counterTimeLeft = new CountDownTimer(1500, 1000) {
 
                             public void onTick(long millisUntilFinished) {
                             }
@@ -323,6 +321,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                                 cartes.get(cartesTouchees.get(1)).vueCarte = cartes.get(cartesTouchees.get(1)).rectoCarte;
                                 cartesTouchees.clear();
                                 canPlay = true;
+                                counterTimeLeft = null;
                             }
                         }.start();
                     }
@@ -413,6 +412,10 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     // Fonction qui indique que la partie est terminée
     private void gameIsFinish(){
         if(nbPairesTrouvees == 10){
+            if(counterTimeLeft != null){
+                counterTimeLeft.cancel();
+            }
+
             gameIsFinish = true;
             AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
             alertDialog.setTitle("Partie terminée");
@@ -430,6 +433,11 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                     });
             alertDialog.show();
         }else if(gameIsFinish && nbPairesTrouvees < 10){
+
+            if(counterReturnCard != null){
+                counterReturnCard.cancel();
+            }
+
             AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
             alertDialog.setTitle("Vous avez perdu");
             alertDialog.setMessage("Le temps restant est écoulé");
@@ -445,6 +453,17 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                         }
                     });
             alertDialog.show();
+        }
+    }
+
+    // Fonction qui arrête le timer
+    public void stopTimer(){
+        if(counterTimeLeft != null){
+            counterTimeLeft.cancel();
+        }
+
+        if(counterReturnCard != null){
+            counterReturnCard.cancel();
         }
     }
 }

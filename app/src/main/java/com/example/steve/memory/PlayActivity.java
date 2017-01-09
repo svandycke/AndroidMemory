@@ -60,6 +60,7 @@ public class PlayActivity extends AppCompatActivity{
     protected void onPause() {
         super.onPause();
         PlayView.pause();
+        PlayView.stopTimer();
     }
     @Override
     protected void onResume() {

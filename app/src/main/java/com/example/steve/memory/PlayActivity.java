@@ -1,6 +1,8 @@
 package com.example.steve.memory;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +26,9 @@ public class PlayActivity extends AppCompatActivity {
 
         // Activation de l'ActionBar
         setupActionBar();
+
+        // Vérouillage du mode paysage
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @Override

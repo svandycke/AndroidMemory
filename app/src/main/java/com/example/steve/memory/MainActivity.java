@@ -1,6 +1,7 @@
 package com.example.steve.memory;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
         Button btnBestScores = (Button) findViewById(R.id.bestScores);
         btnBestScores.setOnClickListener(bestScores);
 
+        // Vérouillage du mode paysage
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         if( getIntent().getBooleanExtra("Exit me", false)){
             finish();

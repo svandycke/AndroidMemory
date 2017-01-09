@@ -3,6 +3,7 @@ package com.example.steve.memory;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -35,6 +36,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         // Activation de l'ActionBar
         setupActionBar();
+
+        // Vérouillage du mode paysage
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // Récupération de l'ID du bouton "Quitter l'application" et assignation de la fonction
         Button btnSettings = (Button) findViewById(R.id.ExitApplication);

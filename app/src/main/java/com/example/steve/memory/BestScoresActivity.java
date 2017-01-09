@@ -1,6 +1,7 @@
 package com.example.steve.memory;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,9 @@ public class BestScoresActivity extends AppCompatActivity {
 
         // Activation de l'ActionBar
         setupActionBar();
+
+        // Vérouillage du mode paysage
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     // Activation de l'ActionBar

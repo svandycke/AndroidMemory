@@ -451,6 +451,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
                             }
                         });
+                alertDialog.setCanceledOnTouchOutside(false);
                 alertDialog.show();
             }
         }else if(gameIsFinish && nbPairesTrouvees < 10 && timeLeft == 0){
@@ -473,6 +474,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
                         }
                     });
+            alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.show();
         } else if(gameIsFinish && nbPairesTrouvees < 10 && nbCoups == 0){
             AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
@@ -489,6 +491,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
                         }
                     });
+            alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.show();
         }
     }
@@ -616,6 +619,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
                             }
                         });
+                alertDialog.setCanceledOnTouchOutside(false);
                 alertDialog.show();
             }
         });

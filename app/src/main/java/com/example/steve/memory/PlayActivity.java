@@ -1,9 +1,13 @@
 package com.example.steve.memory;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -81,7 +85,37 @@ public class PlayActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+             if(PlayView.nbCoups > 0 && !PlayView.gameIsFinish){
+
+                 PlayView.counterTimeLeft.cancel();
+
+                 AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+                 builder1.setMessage("Voulez-vous quitter le jeu ?");
+                 builder1.setCancelable(true);
+
+                 builder1.setPositiveButton("Oui",
+                         new DialogInterface.OnClickListener() {
+                             public void onClick(DialogInterface dialog, int id) {
+                                 dialog.cancel();
+                                 onBackPressed();
+                             }
+                         });
+                 builder1.setNegativeButton("Non",
+                         new DialogInterface.OnClickListener() {
+                             public void onClick(DialogInterface dialog, int id) {
+                                 PlayView.startTimerLeftTime();
+                                 dialog.cancel();
+                             }
+                         });
+
+                 AlertDialog alert11 = builder1.create();
+                 alert11.setCanceledOnTouchOutside(false);
+                 alert11.show();
+
+             }else{
+                 onBackPressed();
+             }
+
             default:
                 return super.onOptionsItemSelected(item);
         }

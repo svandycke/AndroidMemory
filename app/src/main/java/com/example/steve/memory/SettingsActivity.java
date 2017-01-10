@@ -62,12 +62,8 @@ public class SettingsActivity extends AppCompatActivity {
                 //commit prefs on change
                 editor.putBoolean("soundClick", isChecked);
                 editor.commit();
-
             }
         });
-
-
-
     }
 
     // Fonction qui quitte l'application
@@ -87,7 +83,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             AlertDialog.Builder builder1 = new AlertDialog.Builder(mContext);
             builder1.setMessage("Êtes-vous sûre de vouloir supprimer les meilleurs scores ?");
-            builder1.setCancelable(true);
+            builder1.setCancelable(false);
             builder1.setPositiveButton("Oui",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -101,7 +97,6 @@ public class SettingsActivity extends AppCompatActivity {
 
                             dialog.cancel();
 
-
                         }
                     });
             builder1.setNegativeButton("Annuler",
@@ -113,6 +108,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             AlertDialog alert11 = builder1.create();
             alert11.show();
+
         }
     };
 

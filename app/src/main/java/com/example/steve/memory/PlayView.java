@@ -54,13 +54,13 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     int tailleImage;
     int tailleMarge;
     int nbPairesTrouvees=0;
-    int nbCoups=0;
+    public int nbCoups=0;
     MediaPlayer mediaPlayer;
     Boolean soundClick;
     Boolean redimenssionne = false;
     long GameTimeMax = 180000;
     long timeLeft = GameTimeMax;
-    boolean gameIsFinish = false;
+    public boolean gameIsFinish = false;
     CountDownTimer counterTimeLeft = null;
     CountDownTimer counterReturnCard = null;
     String namePlayer;
@@ -280,18 +280,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
             if(carteTouche !=20 && cartes.get(carteTouche).active){
 
                 if(nbCoups==0){
-                    counterTimeLeft = new CountDownTimer(timeLeft, 1000) {
-
-                        public void onTick(long millisUntilFinished) {
-                            setTimeLeft(millisUntilFinished);
-                            timeLeft = millisUntilFinished;
-                        }
-
-                        public void onFinish() {
-                            gameIsFinish = true;
-                            gameIsFinish();
-                        }
-                    }.start();
+                    startTimerLeftTime();
 
                 }
 
@@ -623,12 +612,21 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         });
 
         builder.show();
-
-
     }
 
-    public void getPlayerName(){
+    public void startTimerLeftTime(){
+        counterTimeLeft = new CountDownTimer(timeLeft, 1000) {
 
+            public void onTick(long millisUntilFinished) {
+                setTimeLeft(millisUntilFinished);
+                timeLeft = millisUntilFinished;
+            }
+
+            public void onFinish() {
+                gameIsFinish = true;
+                gameIsFinish();
+            }
+        }.start();
 
     }
 }

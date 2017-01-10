@@ -435,7 +435,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                 long secondes = (timeElasped/1000)%60;
                 long minutes = (timeElasped/1000)/60;
                 String timeString = String.format("%02d:%02d",minutes,secondes);
-                long score = (timeLeft/nbCoups);
+                long score = (timeLeft/(nbCoupsMax-nbCoups));
 
                 AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                 alertDialog.setTitle("Partie terminée");
@@ -512,7 +512,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         // Récupère les paramètres
         String json = data.getString("bestScores", null);
 
-        long score = (timeLeft/nbCoups);
+        long score = (timeLeft/(nbCoupsMax-nbCoups));
 
         if (json != null) {
 
@@ -567,7 +567,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                     Type listType = new TypeToken<ArrayList<BestScore>>(){}.getType();
                     List<BestScore> bestScoresSave = new Gson().fromJson(json, listType);
 
-                    long score = (timeLeft/nbCoups);
+                    long score = (timeLeft/(nbCoupsMax-nbCoups));
                     BestScore nouveau = new BestScore(namePlayer, score);
 
                     bestScoresSave.add(nouveau);
@@ -583,7 +583,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                     // Ajout du premier meilleur score
                     ArrayList<BestScore> bestScores = new ArrayList<BestScore>();
 
-                    long score = (timeLeft/nbCoups);
+                    long score = (timeLeft/(nbCoupsMax-nbCoups));
                     BestScore nouveau = new BestScore(namePlayer, score);
 
                     bestScores.add(nouveau);
@@ -600,7 +600,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                 long secondes = (timeElasped/1000)%60;
                 long minutes = (timeElasped/1000)/60;
                 String timeString = String.format("%02d:%02d",minutes,secondes);
-                long score = (timeLeft/nbCoups);
+                long score = (timeLeft/(nbCoupsMax-nbCoups));
 
                 AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                 alertDialog.setTitle("Partie terminée");

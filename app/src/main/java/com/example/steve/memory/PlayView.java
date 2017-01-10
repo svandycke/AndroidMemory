@@ -14,13 +14,22 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.media.MediaPlayer;
 import android.os.CountDownTimer;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.EditText;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -49,10 +58,12 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     MediaPlayer mediaPlayer;
     Boolean soundClick;
     Boolean redimenssionne = false;
-    long timeLeft = 180000; //
+    long GameTimeMax = 180000;
+    long timeLeft = GameTimeMax;
     boolean gameIsFinish = false;
     CountDownTimer counterTimeLeft = null;
     CountDownTimer counterReturnCard = null;
+    String namePlayer;
 
 
     boolean canPlay = true;
@@ -269,10 +280,11 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
             if(carteTouche !=20 && cartes.get(carteTouche).active){
 
                 if(nbCoups==0){
-                    counterReturnCard = new CountDownTimer(timeLeft, 1000) {
+                    counterTimeLeft = new CountDownTimer(timeLeft, 1000) {
 
                         public void onTick(long millisUntilFinished) {
                             setTimeLeft(millisUntilFinished);
+                            timeLeft = millisUntilFinished;
                         }
 
                         public void onFinish() {
@@ -288,12 +300,14 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                         mediaPlayer.start();
                     cartesTouchees.add(carteTouche);
                     cartes.get(carteTouche).vueCarte = cartes.get(carteTouche).versoCarte;
+                    nbCoups++;
                 }else if(cartesTouchees.size() == 1){
                     if(cartesTouchees.get(0) != carteTouche){
                         if(soundClick)
                             mediaPlayer.start();
                         cartesTouchees.add(carteTouche);
                         cartes.get(carteTouche).vueCarte = cartes.get(carteTouche).versoCarte;
+                        nbCoups++;
                     }
                 }
 
@@ -311,9 +325,10 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                         Log.i("-> FCT <-", "PERDU");
 
                         canPlay = false;
-                        counterTimeLeft = new CountDownTimer(1500, 1000) {
+                        counterReturnCard = new CountDownTimer(1500, 1000) {
 
                             public void onTick(long millisUntilFinished) {
+
                             }
 
                             public void onFinish() {
@@ -321,15 +336,15 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                                 cartes.get(cartesTouchees.get(1)).vueCarte = cartes.get(cartesTouchees.get(1)).rectoCarte;
                                 cartesTouchees.clear();
                                 canPlay = true;
-                                counterTimeLeft = null;
+                                counterReturnCard = null;
                             }
                         }.start();
                     }
                 }
-                nbCoups++;
+
 
                 // Met à jour le label pour afficher le nombre de coups
-                ((PlayActivity) getContext()).setNbCoups("Nb coups : "+ nbCoups);
+                ((PlayActivity) getContext()).setNbCoups("Nombre de coups : "+ nbCoups);
             }
 
             gameIsFinish();
@@ -415,23 +430,33 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
             if(counterTimeLeft != null){
                 counterTimeLeft.cancel();
             }
-
             gameIsFinish = true;
-            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-            alertDialog.setTitle("Partie terminée");
-            alertDialog.setMessage("Nombre de coups : " + nbCoups);
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Retour à l'accueil",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            in = false;
 
-                            Intent intent = new Intent(mContext, MainActivity.class);
-                            mContext.startActivity(intent);
+            if(isBestScore()){
+                addBestScore();
+            }else {
 
-                        }
-                    });
-            alertDialog.show();
+                Long timeElasped = (GameTimeMax - timeLeft);
+                long secondes = (timeElasped/1000)%60;
+                long minutes = (timeElasped/1000)/60;
+                String timeString = String.format("%02d:%02d",minutes,secondes);
+
+                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                alertDialog.setTitle("Partie terminée");
+                alertDialog.setMessage("Nombre de coups : " + nbCoups + "\nTemps écoulé : " + timeString);
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Retour à l'accueil",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                in = false;
+
+                                Intent intent = new Intent(mContext, MainActivity.class);
+                                mContext.startActivity(intent);
+
+                            }
+                        });
+                alertDialog.show();
+            }
         }else if(gameIsFinish && nbPairesTrouvees < 10){
 
             if(counterReturnCard != null){
@@ -465,5 +490,145 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         if(counterReturnCard != null){
             counterReturnCard.cancel();
         }
+    }
+
+    public boolean isBestScore() {
+
+        final SharedPreferences data = mContext.getSharedPreferences("data", Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = data.edit();
+
+        // Récupère les paramètres
+        String json = data.getString("bestScores", null);
+
+        if (json != null) {
+
+            Type listType = new TypeToken<ArrayList<BestScore>>() {
+            }.getType();
+            List<BestScore> bestScoresSave = new Gson().fromJson(json, listType);
+
+            BestScore lastMeilleurScoreSave = bestScoresSave.get((bestScoresSave.size() - 1));
+
+
+            if (nbCoups < lastMeilleurScoreSave.nbCoups) {
+                return true;
+            }
+            else if  (nbCoups == lastMeilleurScoreSave.nbCoups) {
+                if ((GameTimeMax - timeLeft) < lastMeilleurScoreSave.time) {
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+
+    public void addBestScore(){
+        final SharedPreferences data = mContext.getSharedPreferences("data", Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = data.edit();
+
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle("Nouveau meilleur score");
+
+        // Set up the input
+        final EditText input = new EditText(mContext);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("Valider", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if(!input.getText().toString().isEmpty()){
+                    namePlayer = input.getText().toString();
+                }else {
+                    namePlayer = "Anonyme";
+                }
+
+                // Récupère les paramètres
+                String json = data.getString("bestScores", null);
+
+                if(json != null){
+
+                    Type listType = new TypeToken<ArrayList<BestScore>>(){}.getType();
+                    List<BestScore> bestScoresSave = new Gson().fromJson(json, listType);
+
+                    Long timeElasped = (GameTimeMax - timeLeft);
+                    long secondes = (timeElasped/1000)%60;
+                    long minutes = (timeElasped/1000)/60;
+                    String timeString = String.format("%02d:%02d",minutes,secondes);
+
+                    BestScore nouveau = new BestScore(namePlayer,nbCoups, timeElasped, timeString);
+
+                    bestScoresSave.add(nouveau);
+
+                    // Serialisation
+                    Gson gson = new Gson();
+                    json = gson.toJson(bestScoresSave);
+
+                    editor.putString("bestScores", json);
+                    editor.commit();
+                }else{
+
+                    // Ajout du premier meilleur score
+                    ArrayList<BestScore> bestScores = new ArrayList<BestScore>();
+
+                    Long timeElasped = (GameTimeMax - timeLeft);
+                    long secondes = (timeElasped/1000)%60;
+                    long minutes = (timeElasped/1000)/60;
+                    String timeString = String.format("%02d:%02d",minutes,secondes);
+
+                    BestScore nouveau = new BestScore(namePlayer,nbCoups, timeElasped, timeString);
+
+                    bestScores.add(nouveau);
+
+                    // Serialisation
+                    Gson gson = new Gson();
+                    json = gson.toJson(bestScores);
+
+                    editor.putString("bestScores", json);
+                    editor.commit();
+                }
+
+                Long timeElasped = (GameTimeMax - timeLeft);
+                long secondes = (timeElasped/1000)%60;
+                long minutes = (timeElasped/1000)/60;
+                String timeString = String.format("%02d:%02d",minutes,secondes);
+
+                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                alertDialog.setTitle("Partie terminée");
+                alertDialog.setMessage("Nombre de coups : " + nbCoups + "\nTemps écoulé : " + timeString);
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Retour à l'accueil",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                in = false;
+
+                                Intent intent = new Intent(mContext, MainActivity.class);
+                                mContext.startActivity(intent);
+
+                            }
+                        });
+                alertDialog.show();
+            }
+        });
+
+        builder.show();
+
+
+    }
+
+    public void getPlayerName(){
+
+
     }
 }

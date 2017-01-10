@@ -65,7 +65,7 @@ public class BestScoresActivity extends AppCompatActivity {
                     border.setColor(0xe2e2e2);
                 }
                 TextView rowTextView = new TextView(this);
-                rowTextView.setText(bestScores.get(i).name + " - " + bestScores.get(i).nbCoups +" coups - " + bestScores.get(i).timeString);
+                rowTextView.setText(bestScores.get(i).name + " - " + bestScores.get(i).score + " points");
                 rowTextView.setPadding(30,90,30,90);
                 rowTextView.setTextSize(20);
 

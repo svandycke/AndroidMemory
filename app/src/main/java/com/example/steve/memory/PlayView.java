@@ -54,6 +54,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     int tailleImage;
     int tailleMarge;
     int nbPairesTrouvees=0;
+    public int nbCoupsMax=100;
     public int nbCoups=0;
     MediaPlayer mediaPlayer;
     Boolean soundClick;
@@ -279,7 +280,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
             if(carteTouche !=20 && cartes.get(carteTouche).active){
 
-                if(nbCoups==0){
+                if(nbCoups==nbCoupsMax){
                     startTimerLeftTime();
 
                 }
@@ -289,15 +290,20 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                         mediaPlayer.start();
                     cartesTouchees.add(carteTouche);
                     cartes.get(carteTouche).vueCarte = cartes.get(carteTouche).versoCarte;
-                    nbCoups++;
+                    nbCoups--;
                 }else if(cartesTouchees.size() == 1){
                     if(cartesTouchees.get(0) != carteTouche){
                         if(soundClick)
                             mediaPlayer.start();
                         cartesTouchees.add(carteTouche);
                         cartes.get(carteTouche).vueCarte = cartes.get(carteTouche).versoCarte;
-                        nbCoups++;
+                        nbCoups--;
                     }
+                }
+
+                if(nbCoups==0){
+                    gameIsFinish = true;
+
                 }
 
                 if (cartesTouchees.size() == 2) {
@@ -333,7 +339,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
 
                 // Met à jour le label pour afficher le nombre de coups
-                ((PlayActivity) getContext()).setNbCoups("Nombre de coups : "+ nbCoups);
+                ((PlayActivity) getContext()).setNbCoups("Nb coups restant : "+ nbCoups);
             }
 
             gameIsFinish();
@@ -344,7 +350,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     }
 
     public void initparameters() {
-        nbCoups = 0;
+        nbCoups = nbCoupsMax;
         nbPairesTrouvees = 0;
         cartes.clear();
         cartesTouchees.clear();
@@ -429,10 +435,11 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                 long secondes = (timeElasped/1000)%60;
                 long minutes = (timeElasped/1000)/60;
                 String timeString = String.format("%02d:%02d",minutes,secondes);
+                long score = (timeLeft/nbCoups);
 
                 AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                 alertDialog.setTitle("Partie terminée");
-                alertDialog.setMessage("Nombre de coups : " + nbCoups + "\nTemps écoulé : " + timeString);
+                alertDialog.setMessage("Nombre de coups : " + (nbCoupsMax-nbCoups) + "\nTemps écoulé : " + timeString + "\nPoints : "+ score);
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Retour à l'accueil",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -446,7 +453,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                         });
                 alertDialog.show();
             }
-        }else if(gameIsFinish && nbPairesTrouvees < 10){
+        }else if(gameIsFinish && nbPairesTrouvees < 10 && timeLeft == 0){
 
             if(counterReturnCard != null){
                 counterReturnCard.cancel();
@@ -454,7 +461,23 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
             AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
             alertDialog.setTitle("Vous avez perdu");
-            alertDialog.setMessage("Le temps restant est écoulé");
+            alertDialog.setMessage("Le temps restant est écoulé.");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Retour à l'accueil",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            in = false;
+
+                            Intent intent = new Intent(mContext, MainActivity.class);
+                            mContext.startActivity(intent);
+
+                        }
+                    });
+            alertDialog.show();
+        } else if(gameIsFinish && nbPairesTrouvees < 10 && nbCoups == 0){
+            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+            alertDialog.setTitle("Vous avez perdu");
+            alertDialog.setMessage("Le nombre de coups restants est insuffisant. ");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Retour à l'accueil",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -489,6 +512,8 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         // Récupère les paramètres
         String json = data.getString("bestScores", null);
 
+        long score = (timeLeft/nbCoups);
+
         if (json != null) {
 
             Type listType = new TypeToken<ArrayList<BestScore>>() {
@@ -498,15 +523,8 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
             BestScore lastMeilleurScoreSave = bestScoresSave.get((bestScoresSave.size() - 1));
 
 
-            if (nbCoups < lastMeilleurScoreSave.nbCoups) {
+            if(lastMeilleurScoreSave.score<score){
                 return true;
-            }
-            else if  (nbCoups == lastMeilleurScoreSave.nbCoups) {
-                if ((GameTimeMax - timeLeft) < lastMeilleurScoreSave.time) {
-                    return true;
-                }else{
-                    return false;
-                }
             }
             else {
                 return false;
@@ -520,8 +538,6 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     public void addBestScore(){
         final SharedPreferences data = mContext.getSharedPreferences("data", Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = data.edit();
-
-
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle("Nouveau meilleur score");
@@ -551,12 +567,8 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                     Type listType = new TypeToken<ArrayList<BestScore>>(){}.getType();
                     List<BestScore> bestScoresSave = new Gson().fromJson(json, listType);
 
-                    Long timeElasped = (GameTimeMax - timeLeft);
-                    long secondes = (timeElasped/1000)%60;
-                    long minutes = (timeElasped/1000)/60;
-                    String timeString = String.format("%02d:%02d",minutes,secondes);
-
-                    BestScore nouveau = new BestScore(namePlayer,nbCoups, timeElasped, timeString);
+                    long score = (timeLeft/nbCoups);
+                    BestScore nouveau = new BestScore(namePlayer, score);
 
                     bestScoresSave.add(nouveau);
 
@@ -571,12 +583,8 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                     // Ajout du premier meilleur score
                     ArrayList<BestScore> bestScores = new ArrayList<BestScore>();
 
-                    Long timeElasped = (GameTimeMax - timeLeft);
-                    long secondes = (timeElasped/1000)%60;
-                    long minutes = (timeElasped/1000)/60;
-                    String timeString = String.format("%02d:%02d",minutes,secondes);
-
-                    BestScore nouveau = new BestScore(namePlayer,nbCoups, timeElasped, timeString);
+                    long score = (timeLeft/nbCoups);
+                    BestScore nouveau = new BestScore(namePlayer, score);
 
                     bestScores.add(nouveau);
 
@@ -592,10 +600,11 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                 long secondes = (timeElasped/1000)%60;
                 long minutes = (timeElasped/1000)/60;
                 String timeString = String.format("%02d:%02d",minutes,secondes);
+                long score = (timeLeft/nbCoups);
 
                 AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                 alertDialog.setTitle("Partie terminée");
-                alertDialog.setMessage("Nombre de coups : " + nbCoups + "\nTemps écoulé : " + timeString);
+                alertDialog.setMessage("Nombre de coups : " + (nbCoupsMax-nbCoups) + "\nTemps écoulé : " + timeString + "\nPoints : "+ score);
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Retour à l'accueil",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -623,6 +632,8 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
             }
 
             public void onFinish() {
+                timeLeft = 0;
+                setTimeLeft(timeLeft);
                 gameIsFinish = true;
                 gameIsFinish();
             }

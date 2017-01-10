@@ -21,14 +21,10 @@ import static android.content.Context.MODE_PRIVATE;
 public class BestScore {
 
     String name;
-    int nbCoups;
-    long time;
-    String timeString;
+    long score;
 
-    public BestScore(String name, int nbCoups, long time, String timeString){
+    public BestScore(String name, long score){
         this.name = name;
-        this.nbCoups = nbCoups;
-        this.time = time;
-        this.timeString = timeString;
+        this.score = score;
     }
 }

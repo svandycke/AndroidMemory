@@ -507,6 +507,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         }
     }
 
+    // Vérifie si le joueur à réaliser un meilleur score
     public boolean isBestScore() {
 
         final SharedPreferences data = mContext.getSharedPreferences("data", Context.MODE_PRIVATE);
@@ -538,6 +539,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         }
     }
 
+    // Fonction qui ajoute un meilleur score
     public void addBestScore(){
         final SharedPreferences data = mContext.getSharedPreferences("data", Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = data.edit();
@@ -627,6 +629,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         builder.show();
     }
 
+    // Fonction qui démare le timer du jeu
     public void startTimerLeftTime(){
         counterTimeLeft = new CountDownTimer(timeLeft, 1000) {
 

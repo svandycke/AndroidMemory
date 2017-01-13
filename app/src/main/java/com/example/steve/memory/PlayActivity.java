@@ -3,6 +3,7 @@ package com.example.steve.memory;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -72,6 +73,10 @@ public class PlayActivity extends AppCompatActivity{
         PlayView.resume();
     }
 
+    @Override
+    public void onBackPressed() {
+    }
+
 
     // Activation de l'ActionBar
     private void setupActionBar() {
@@ -85,9 +90,11 @@ public class PlayActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-             if(PlayView.nbCoups > 0 && !PlayView.gameIsFinish){
+             if((PlayView.nbCoupsMax - PlayView.nbCoups) > 0 && !PlayView.gameIsFinish){
 
-                 PlayView.counterTimeLeft.cancel();
+                 if(PlayView.counterTimeLeft != null){
+                     PlayView.counterTimeLeft.cancel();
+                 }
 
                  AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
                  builder1.setMessage("Voulez-vous quitter le jeu ?");
@@ -97,7 +104,8 @@ public class PlayActivity extends AppCompatActivity{
                          new DialogInterface.OnClickListener() {
                              public void onClick(DialogInterface dialog, int id) {
                                  dialog.cancel();
-                                 onBackPressed();
+                                 Intent intent = new Intent(PlayActivity.this, MainActivity.class);
+                                 startActivity(intent);
                              }
                          });
                  builder1.setNegativeButton("Non",
@@ -113,7 +121,8 @@ public class PlayActivity extends AppCompatActivity{
                  alert11.show();
 
              }else{
-                 onBackPressed();
+                 Intent intent = new Intent(PlayActivity.this, MainActivity.class);
+                 startActivity(intent);
              }
 
             default:

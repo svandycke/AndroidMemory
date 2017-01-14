@@ -25,8 +25,6 @@ import android.widget.EditText;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +80,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
         mContext	= context;
         mRes 		= mContext.getResources();
-        recto       = BitmapFactory.decodeResource(mRes, R.drawable.recto1);
+        recto       = BitmapFactory.decodeResource(mRes, R.drawable.recto);
 
         // Charge le son Click
         int resID = getResources().getIdentifier("click", "raw", mContext.getPackageName());

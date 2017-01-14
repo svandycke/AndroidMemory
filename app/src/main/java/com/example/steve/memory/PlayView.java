@@ -72,7 +72,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
     public PlayView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        // permet d'ecouter les surfaceChanged, surfaceCreated, surfaceDestroyed
+        // Permet d'ecouter les surfaceChanged, surfaceCreated, surfaceDestroyed
         holder = getHolder();
         holder.addCallback(this);
 
@@ -92,14 +92,16 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         SharedPreferences prefs = mContext.getSharedPreferences("params", Context.MODE_PRIVATE);
         soundClick = prefs.getBoolean("soundClick", true);
 
-        // creation du thread
+        // Creation du thread
         cv_thread   = new Thread(this);
-        // prise de focus pour gestion des touches
+
+        // Prise de focus pour gestion des touches
         setFocusable(true);
 
         // Initialisation des paramètres
         initparameters();
     }
+
     // Callback : cycle de vie de la surfaceview
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
@@ -114,12 +116,13 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
     }
 
+    // Fonction qui est déclanché lorsque l'application est mise en arrière plan
     public void pause() {
         in=false;
-        //-- Tant que on est en Pause
         while (true) {
             try {
-                cv_thread.join(); //--tente de relancer le Thread
+                // Essai de relance le thread
+                cv_thread.join();
             }
             catch (InterruptedException e)
             {
@@ -130,27 +133,29 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         cv_thread=null;
     }
 
+    // Création du threa pour débuter à dessiner
     public void resume() {
-        //-- Zone de deessin disponible
         in=true;
-        //-- On peut dessiner, donc on créé un Tread pour dessiner !
-        cv_thread = new Thread(this); //-- This appele ici la method run() de la class
+        cv_thread = new Thread(this);
         cv_thread.start();
     }
 
-    /**
-     * run (run du thread créé)
-     * on endort le thread, on modifie le compteur d'animation, on prend la main pour dessiner et on dessine puis on libère le canvas
-     */
+   // Run
     public void run() {
         while (in == true) {
-            //-- On peut dessiner si le holder est disponible
+
+            // Regarde si la surfaceview est disponnible
             if (!holder.getSurface().isValid())
                 continue;
-            //-- Définition d'un canevas, et veroullage le temps que l'on dessine dessus
+
+            // Creation d'un canvas
             Canvas c = holder.lockCanvas();
+
+            // Dessine sur la surfaceview
             nDraw(c);
-            holder.unlockCanvasAndPost(c); //-- Libération du dessin
+
+            // Dévérouillage du canvas
+            holder.unlockCanvasAndPost(c);
 
             // Pour dessiner à 50 fps
             try {
@@ -159,7 +164,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         }
     }
 
-    // dessin du jeu
+    // Fonction qui déssine sur la surfaceview
     private void nDraw(Canvas canvas) {
 
         if(in == true) {
@@ -212,7 +217,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         }
     }
 
-    // fonction permettant de recuperer les evenements tactiles
+    // Fonction qui permet de récupérer les évènements tactiles
     public boolean onTouchEvent (MotionEvent event) {
 
         if (canPlay && !gameIsFinish) {
@@ -280,9 +285,9 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
             if(carteTouche !=20 && cartes.get(carteTouche).active){
 
+                // Démarage du compte à rebours si c'est le premier tour
                 if(nbCoups==nbCoupsMax){
                     startTimerLeftTime();
-
                 }
 
                 if(cartesTouchees.size() == 0){
@@ -303,7 +308,6 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
                 if(nbCoups==0){
                     gameIsFinish = true;
-
                 }
 
                 if (cartesTouchees.size() == 2) {
@@ -342,6 +346,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
                 ((PlayActivity) getContext()).setNbCoups("Nb coups restant : "+ nbCoups);
             }
 
+            // Vérifie si le jeu est terminé
             gameIsFinish();
 
         }
@@ -349,6 +354,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
         return super.onTouchEvent(event);
     }
 
+    // Fonction qui initialise les paramètres
     public void initparameters() {
         nbCoups = nbCoupsMax;
         nbPairesTrouvees = 0;
@@ -419,7 +425,7 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
     }
 
-    // Fonction qui indique que la partie est terminée
+    // Fonction qui vérifie si la partie est terminée
     private void gameIsFinish(){
         if(nbPairesTrouvees == 10){
             if(counterTimeLeft != null){
@@ -549,11 +555,8 @@ public class PlayView extends SurfaceView implements SurfaceHolder.Callback, Run
 
         // Set up the input
         final EditText input = new EditText(mContext);
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
-
-        // Set up the buttons
         builder.setPositiveButton("Valider", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

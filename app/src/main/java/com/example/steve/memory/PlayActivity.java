@@ -45,6 +45,7 @@ public class PlayActivity extends AppCompatActivity{
         leftTime = (TextView)findViewById(R.id.leftTime);
     }
 
+    // Fonction qui permet de mettre à jour le label "Nb coups restants"
     public void setNbCoups(final String txt){
         PlayActivity.this.runOnUiThread(new Runnable() {
             public void run() {
@@ -53,6 +54,7 @@ public class PlayActivity extends AppCompatActivity{
         });
     }
 
+    // Fonction qui permet de mettre à jour le label "Temps restant"
     public void setTimeLeft(final String txt){
         PlayActivity.this.runOnUiThread(new Runnable() {
             public void run() {

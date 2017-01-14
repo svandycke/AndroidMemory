@@ -58,7 +58,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         sound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
                 //commit prefs on change
                 editor.putBoolean("soundClick", isChecked);
                 editor.commit();
